@@ -8,3 +8,6 @@
 - TODO netty bundle group
 - TODO generate pom.xml out of our jars (useful for security scanners)
 - TODO add markdown formatter tool (NOT prettier, maybe comrack)
+- TODO design some form of publishing workflow for bundles
+- TODO shfmt / shellcheck
+- TODO precommit

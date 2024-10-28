@@ -18,9 +18,7 @@ The main rules are "bnd" and "launcher".
 target. The output of the bnd rule is an OSGI bundle that can be deployed.
 
 "launcher" is used for connecting your bundles to a bazel target
-which can be run to launch OSGI applications. In this example
-we attach "my\_bundle" above to the launcher, using the default
-settings for the launcher which spawns an OSGI Gogo shell.
+which can be run to launch OSGI applications.
 
 See [examples/hello/BUILD](examples/hello/BUILD) for annotated usage.
 
@@ -38,3 +36,11 @@ See [examples/hello/BUILD](examples/hello/BUILD) for annotated usage.
 - bnd          - 7.0.0
 - apache-felix - 7.0.5
 - OSGI spec    - 8.0.0
+
+## TODO
+
+Release and deployment is a big missing question.
+
+Some bigger "wrapping" rules that will do the majority of the work.
+
+See [TODO.md](TODO.md) for more detailed and smaller TODOs.
