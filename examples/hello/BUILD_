@@ -1,0 +1,29 @@
+# NOTE: unimplemented, inprogress featureset
+
+#
+# a one-stop-shop rule would be nice!!!
+#
+osgi_bundle(
+    name = "hello",
+    srcs = [
+        "Hello.java",
+    ],
+    private_package = "boinsoft.atosgi.example",
+    features = [
+        "osgi.ds",
+    ],
+)
+
+#
+# an interactive gogo test would be nice. You
+# can run bazel test and it'll spawn a gogo
+# interactive shell and run the commands you need and
+# confirms no errors/exceptions.
+#
+osgi_bundle_gogo_test(
+    name = "hello_test",
+    commands = "hello:status",
+    bundles = [
+        ":hello",
+    ],
+)
