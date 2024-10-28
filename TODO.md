@@ -4,10 +4,11 @@
 - TODO design `osgi_bundle` rule
 - TODO remove all XManifest stuff
 - TODO better launcher documentation
-- TODO logging bundle group
+- DONE logging bundle group
 - TODO netty bundle group
 - TODO generate pom.xml out of our jars (useful for security scanners)
 - TODO add markdown formatter tool (NOT prettier, maybe comrack)
 - TODO design some form of publishing workflow for bundles
 - TODO shfmt / shellcheck
 - TODO precommit
+- TODO figure out a way to load custom log4j configs

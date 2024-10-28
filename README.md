@@ -22,6 +22,16 @@ which can be run to launch OSGI applications.
 
 See [examples/hello/BUILD](examples/hello/BUILD) for annotated usage.
 
+### Bundle Groups
+
+We separate out sets of useful features as "Bundle Groups". You can see these bundle groups
+via:
+
+    bazel query 'kind(bundles, @atosgi//bundles:all)'
+
+NOTE: These bundle groups are a more limited form of OBR or Apache Karaf Features and may soon
+be replaced.
+
 ## Useful targets
 
 - `@atosgi//:gogo` - bazel run target which drops straight into a Apache Felix gogo shell.

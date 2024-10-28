@@ -61,6 +61,21 @@ map_mvn_artifact(
     "io.vavr",
 )
 
+map_mvn_artifact(
+    "org.apache.felix:org.apache.felix.log:1.3.0",
+    "org.apache.felix.log",
+)
+
+map_mvn_artifact(
+    "org.ops4j.pax.logging:pax-logging-api:2.2.7",
+    "org.ops4j.pax.logging.api",
+)
+
+map_mvn_artifact(
+    "org.ops4j.pax.logging:pax-logging-log4j2:2.2.7",
+    "org.ops4j.pax.logging.log4j2",
+)
+
 bundles(
     name = "felix-default",
     bundles = [
@@ -85,6 +100,15 @@ bundles(
     depends = [],
     provides = [
         "declarative-services",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+bundles(
+    name = "pax-logging-log4j2",
+    bundles = [
+        ":org.ops4j.pax.logging.api",
+        ":org.ops4j.pax.logging.log4j2",
     ],
     visibility = ["//visibility:public"],
 )
