@@ -12,3 +12,5 @@
 - TODO shfmt / shellcheck
 - TODO precommit
 - TODO figure out a way to load custom log4j configs
+- TODO design bundles.index format, include start-level, etc.
+- TODO remove map\_mvn\_artifact everywhere

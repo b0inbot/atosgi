@@ -12,12 +12,15 @@ NOTE: currently requires bazel8 due to use of new "symbolic macros"
 
 ### Usage
 
-The main rules are "bnd" and "launcher".
+The main rules are "bnd", "bundles", "launcher".
 
 "bnd" is used for applying bnd rules to a java\_library
 target. The output of the bnd rule is an OSGI bundle that can be deployed.
 
-"launcher" is used for connecting your bundles to a bazel target
+"bundles" is used for grouping related OSGI bundles together in a single group. In
+documentation these are called Bundle Groups (see below).
+
+"launcher" is used for connecting your bundle groups to a bazel target
 which can be run to launch OSGI applications.
 
 See [examples/hello/BUILD](examples/hello/BUILD) for annotated usage.
@@ -29,8 +32,8 @@ via:
 
     bazel query 'kind(bundles, @atosgi//bundles:all)'
 
-NOTE: These bundle groups are a more limited form of OBR or Apache Karaf Features and may soon
-be replaced.
+NOTE: These bundle groups are a more limited form of OBR or Apache Karaf Features. The index
+format and behavior is currently in flux.
 
 ## Useful targets
 

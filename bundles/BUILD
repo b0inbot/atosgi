@@ -1,35 +1,10 @@
+load("//private:artifact.bzl", artifact = "atosgi_artifact")
 load("//private:bundles.bzl", "bundles")
 load("//private:map_maven_artifacts.bzl", "map_mvn_artifact")
 
-map_mvn_artifact(
-    "org.fusesource.jansi:jansi",
-    "jansi",
-)
-
-map_mvn_artifact(
-    "org.apache.felix:org.apache.felix.bundlerepository",
-    "bundlerepository",
-)
-
-map_mvn_artifact(
-    "org.apache.felix:org.apache.felix.gogo.command",
-    "gogo.command",
-)
-
-map_mvn_artifact(
-    "org.apache.felix:org.apache.felix.gogo.jline",
-    "gogo.jline",
-)
-
-map_mvn_artifact(
-    "org.apache.felix:org.apache.felix.gogo.runtime",
-    "gogo.runtime",
-)
-
-map_mvn_artifact(
-    "org.jline:jline",
-    "jline",
-)
+#
+# TODO: these map_* calls are unnecessary now
+#
 
 map_mvn_artifact(
     "org.apache.felix:org.apache.felix.scr",
@@ -79,12 +54,12 @@ map_mvn_artifact(
 bundles(
     name = "felix-default",
     bundles = [
-        ":bundlerepository",
-        ":gogo.command",
-        ":gogo.jline",
-        ":gogo.runtime",
-        ":jansi",
-        ":jline",
+        artifact("org.apache.felix:org.apache.felix.bundlerepository"),
+        artifact("org.apache.felix:org.apache.felix.gogo.command"),
+        artifact("org.apache.felix:org.apache.felix.gogo.jline"),
+        artifact("org.apache.felix:org.apache.felix.gogo.runtime"),
+        artifact("org.fusesource.jansi:jansi"),
+        artifact("org.jline:jline"),
     ],
     visibility = ["//visibility:public"],
 )

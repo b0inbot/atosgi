@@ -2,13 +2,15 @@ load("@rules_java//java:defs.bzl", "JavaInfo")
 load(":providers.bzl", "BundlesInfo")
 
 def _bundles_impl(ctx):
+    name = ctx.attr.name
+
     bundles = ctx.files.bundles
     sl = ctx.actions.declare_file(
-        ctx.label.name + "_ATOSGI_MANIFEST.MF",
+        ctx.label.name + ".index",
     )
     ctx.actions.write(
         sl,
-        "\n".join([x.basename for x in bundles]) + "\n",
+        "\n".join([x.short_path for x in bundles]) + "\n",
     )
 
     return [

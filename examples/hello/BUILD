@@ -1,4 +1,4 @@
-load("@atosgi//:defs.bzl", "atosgi_artifact", "bnd", "launcher")
+load("@atosgi//:defs.bzl", "atosgi_artifact", "bnd", "bundles", "launcher")
 
 # We define our java_library like any other library, except that if we
 # need OSGI APIs, we include them as deps.
@@ -35,10 +35,17 @@ bnd(
     ],
 )
 
+# We create a "bundle group" which specifies the list of bundles and other
+# bundle group dependencies. (This is currently required for running in a launcher target
+# but may become unnecessary.)
+bundles(
+    name = "hello_bundles",
+    bundles = [
+        ":hello_bundle",
+    ],
+)
+
 # We define a launcher which can be used as a local testing environment.
-# we include "felix-default" and "declarative-services" by default
-# but they are included here as examples.
-#
 launcher(
     name = "interactive",
     # you can see which bundle groups are available:
@@ -47,10 +54,7 @@ launcher(
     bundles = [
         "@atosgi//bundles:felix-default",
         "@atosgi//bundles:declarative-services",
-    ],
-    # targets are *any* bnd label
-    targets = [
-        ":hello_bundle",
+        ":hello_bundles",
     ],
     visibility = ["//visibility:public"],
 )

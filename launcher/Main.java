@@ -19,7 +19,7 @@ import org.osgi.framework.startlevel.FrameworkStartLevel;
  * Main is the entrypoint for launching the atosgi launcher.
  *
  * <p>It launches OSGI, sets up cache in a temporary directory, performs some initial configuration,
- * then tries to find bundles embedded within the launcher.
+ * then tries to find bundles embedded within the launcher or within the bazel runtime files
  */
 public class Main {
 
@@ -34,6 +34,8 @@ public class Main {
     }
   }
 
+  protected record PendingBundles(String source, String URI) {}
+
   public static void info(String msg) {
     System.out.printf("[INFO] %s\n", msg);
   }
@@ -42,12 +44,36 @@ public class Main {
 
   public static void main(String[] args) {
     info("atosgi-launcher");
-    info("== CWD: " + Path.of("").toAbsolutePath().toString());
+    Path cwd = Path.of("").toAbsolutePath();
+    info("== CWD: " + cwd.toString());
+
     try {
 
       // TODO: load tmp from env
       Path tmp = FileSystems.getDefault().getPath("/tmp");
       Path cache = Files.createTempDirectory(tmp, "atosgi-cache");
+
+      List<PendingBundles> bundlesToInstall = new ArrayList<>();
+
+      // find and install all the bundles in our JAVA_RUNFILES manifest. This is for
+      // running via bazel run :target but we should eventually use it instead of
+      // prefix scanning in our classpath.
+      List<Path> indices = resolveIndexes();
+      for (Path index : indices) {
+        info("got index " + index.toString());
+        var indexName = index.getFileName().toString().replace(".index", "");
+        var fileReader = Files.newBufferedReader(index, StandardCharsets.UTF_8);
+        while (fileReader.ready()) {
+          String line = fileReader.readLine();
+          String folder = index.getParent().getFileName().toString();
+          if (line.endsWith(".jar")) {
+            bundlesToInstall.add(new PendingBundles(indexName, "file:" + line));
+          }
+          // TODO: if an index points to antoher index, load it
+        }
+
+        fileReader.close();
+      }
 
       Map<String, String> configProps =
           Map.of(
@@ -98,29 +124,19 @@ public class Main {
         }
       }
 
-      // find and install all the bundles in our JAVA_RUNFILES manifest. This is for
-      // running via bazel run :target but we should eventually use it instead of
-      // prefix scanning in our classpath.
-      List<Path> manifests = resolveAtosgiManifests();
-      for (Path atm : manifests) {
-        var fileReader = Files.newBufferedReader(atm, StandardCharsets.UTF_8);
-        while (fileReader.ready()) {
-          String line = fileReader.readLine();
-          String folder = atm.getParent().getFileName().toString();
-          Bundle b = ctx.installBundle("file://" + atm.getParent().toString() + "/" + line);
-          var prefix = bundlePrefixes.get(folder);
-          if (prefix == null) {
-            prefix = bundlePrefixes.get(folder + "/");
-          }
-          if (prefix != null) {
-            b.adapt(BundleStartLevel.class).setStartLevel(prefix.startLevel());
-          } else {
-            b.adapt(BundleStartLevel.class).setStartLevel(defaultStartLevel);
-          }
-
-          bundles.add(b);
+      for (var pending : bundlesToInstall) {
+        Bundle b = ctx.installBundle(pending.URI);
+        var prefix = bundlePrefixes.get(pending.source);
+        if (prefix == null) {
+          prefix = bundlePrefixes.get(pending.source + "/");
         }
-        fileReader.close();
+        if (prefix != null) {
+          b.adapt(BundleStartLevel.class).setStartLevel(prefix.startLevel());
+        } else {
+          b.adapt(BundleStartLevel.class).setStartLevel(defaultStartLevel);
+        }
+
+        bundles.add(b);
       }
 
       framework.start();
@@ -192,7 +208,7 @@ public class Main {
     return al;
   }
 
-  private static List<Path> resolveAtosgiManifests() throws IOException {
+  private static List<Path> resolveIndexes() throws IOException {
     Map<String, String> env = System.getenv();
     if (env.get("JAVA_RUNFILES") == null) {
       return new ArrayList<Path>();
@@ -200,24 +216,20 @@ public class Main {
     String file = env.get("JAVA_RUNFILES") + "/MANIFEST";
     Path manifestFile = FileSystems.getDefault().getPath(file);
 
-    List<Path> manifests = new ArrayList<Path>();
+    List<Path> indices = new ArrayList<Path>();
     BufferedReader fileReader = Files.newBufferedReader(manifestFile, StandardCharsets.UTF_8);
     while (fileReader.ready()) {
       String line = fileReader.readLine();
       String[] parts = line.split(" ");
       String name = parts[0];
-      if (name.endsWith("_ATOSGI_MANIFEST.MF")) {
-        manifests.add(FileSystems.getDefault().getPath(parts[1]));
+      if (name.endsWith(".index")) {
+        indices.add(FileSystems.getDefault().getPath(parts[1]));
       }
     }
     fileReader.close();
 
-    // just a quirk of how the build and manifest file works, order is in reverse from:
-    // 1. most generic/base items.
-    // 2. less generic ones passed into launcher.
-    // 3. your own targets.
-    Collections.reverse(manifests);
-    return manifests;
+    Collections.reverse(indices);
+    return indices;
   }
 
   private static Map<String, Prefix> resolveBundlePrefixes(String prefixes) {

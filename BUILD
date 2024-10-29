@@ -34,6 +34,8 @@ alias(
 
 launcher(
     name = "gogo",
-    targets = [],
+    bundles = [
+        "@atosgi//bundles:felix-default",
+    ],
     visibility = ["//visibility:public"],
 )
