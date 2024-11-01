@@ -36,6 +36,7 @@ launcher(
     name = "gogo",
     bundles = [
         "@atosgi//bundles:felix-default",
+        "@atosgi//bundles:extras",
     ],
     visibility = ["//visibility:public"],
 )
