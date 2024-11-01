@@ -26,6 +26,7 @@ maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 maven.install(
     name = "boinsoft_atosgi_maven",
     artifacts = [
+        # START-pom.xml
         "io.vavr:vavr:0.10.4",
         "org.osgi:osgi.core:8.0.0",
         "org.osgi:osgi.cmpn:7.0.0",
@@ -59,6 +60,7 @@ maven.install(
         "io.netty:netty-transport-native-epoll:4.1.100.Final",
         "io.netty:netty-transport-classes-epoll:4.1.100.Final",
         "io.netty:netty-handler-proxy:4.1.100.Final",
+        # END-pom.xml
     ],
     strict_visibility = True,
 )
