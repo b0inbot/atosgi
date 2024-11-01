@@ -4,7 +4,6 @@ import io.vavr.control.*;
 import java.io.*;
 import java.net.*;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
 import java.util.jar.*;
@@ -34,8 +33,6 @@ public class Main {
     }
   }
 
-  protected record PendingBundles(String source, String URI) {}
-
   public static void info(String msg) {
     System.out.printf("[INFO] %s\n", msg);
   }
@@ -53,27 +50,10 @@ public class Main {
       Path tmp = FileSystems.getDefault().getPath("/tmp");
       Path cache = Files.createTempDirectory(tmp, "atosgi-cache");
 
-      List<PendingBundles> bundlesToInstall = new ArrayList<>();
-
       // find and install all the bundles in our JAVA_RUNFILES manifest. This is for
       // running via bazel run :target but we should eventually use it instead of
       // prefix scanning in our classpath.
-      List<Path> indices = resolveIndexes();
-      for (Path index : indices) {
-        info("got index " + index.toString());
-        var indexName = index.getFileName().toString().replace(".index", "");
-        var fileReader = Files.newBufferedReader(index, StandardCharsets.UTF_8);
-        while (fileReader.ready()) {
-          String line = fileReader.readLine();
-          String folder = index.getParent().getFileName().toString();
-          if (line.endsWith(".jar")) {
-            bundlesToInstall.add(new PendingBundles(indexName, "file:" + line));
-          }
-          // TODO: if an index points to antoher index, load it
-        }
-
-        fileReader.close();
-      }
+      var indices = resolveIndexes();
 
       Map<String, String> configProps =
           Map.of(
@@ -97,7 +77,7 @@ public class Main {
 
       // TODO: delete all XManifest usage with something else. File is empty on bazel run :...
       XManifest manifest = new XManifest(Files.newInputStream(p));
-      var defaultStartLevel = manifest.getInt("Atosgi-StartLevel", 20).get();
+      var defaultStartLevel = manifest.getInt("Atosgi-StartLevel", 50).get();
       var sleepIntervalMs = manifest.getInt("Atosgi-SleepIntervalMs", 100).get();
 
       // find and install all the bundles embedded in our super-JAR
@@ -124,21 +104,13 @@ public class Main {
         }
       }
 
-      for (var pending : bundlesToInstall) {
-        Bundle b = ctx.installBundle(pending.URI);
-        var prefix = bundlePrefixes.get(pending.source);
-        if (prefix == null) {
-          prefix = bundlePrefixes.get(pending.source + "/");
-        }
-        if (prefix != null) {
-          b.adapt(BundleStartLevel.class).setStartLevel(prefix.startLevel());
-        } else {
-          b.adapt(BundleStartLevel.class).setStartLevel(defaultStartLevel);
-        }
-
-        bundles.add(b);
+      for (var tryIndex : indices) {
+        tryIndex.onSuccess(
+            (index) ->
+                index
+                    .install(ctx, defaultStartLevel)
+                    .forEach((tryBundle) -> tryBundle.onSuccess((b) -> bundles.add(b))));
       }
-
       framework.start();
 
       // start each bundle
@@ -208,28 +180,20 @@ public class Main {
     return al;
   }
 
-  private static List<Path> resolveIndexes() throws IOException {
-    Map<String, String> env = System.getenv();
-    if (env.get("JAVA_RUNFILES") == null) {
-      return new ArrayList<Path>();
+  private static List<Try<BundleIndex>> resolveIndexes() throws IOException {
+    var env = System.getenv();
+    var runFiles = env.get("JAVA_RUNFILES");
+    if (runFiles == null) {
+      return new ArrayList<>();
     }
-    String file = env.get("JAVA_RUNFILES") + "/MANIFEST";
-    Path manifestFile = FileSystems.getDefault().getPath(file);
-
-    List<Path> indices = new ArrayList<Path>();
-    BufferedReader fileReader = Files.newBufferedReader(manifestFile, StandardCharsets.UTF_8);
-    while (fileReader.ready()) {
-      String line = fileReader.readLine();
-      String[] parts = line.split(" ");
-      String name = parts[0];
-      if (name.endsWith(".index")) {
-        indices.add(FileSystems.getDefault().getPath(parts[1]));
-      }
-    }
-    fileReader.close();
-
-    Collections.reverse(indices);
-    return indices;
+    var fs = FileSystems.getDefault();
+    var manifestFile = fs.getPath(runFiles + "/MANIFEST");
+    return Files.lines(manifestFile)
+        .map(line -> line.split(" "))
+        .filter(tokens -> tokens[0].endsWith(".index"))
+        .map(tokens -> FileSystems.getDefault().getPath(tokens[1]))
+        .map(BundleIndex::parse)
+        .collect(Collectors.toList());
   }
 
   private static Map<String, Prefix> resolveBundlePrefixes(String prefixes) {

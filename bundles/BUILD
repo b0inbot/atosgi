@@ -9,6 +9,10 @@ bundles(
         artifact("org.osgi:org.osgi.util.tracker"),
         artifact("io.vavr:vavr"),
     ],
+    start_levels = [
+        "org.osgi=40",
+        "io.vavr=40",
+    ],
 )
 
 # untested
@@ -30,6 +34,11 @@ bundles(
         artifact("org.fusesource.jansi:jansi"),
         artifact("org.jline:jline"),
     ],
+    start_levels = [
+        "org.fusesource=10",
+        "org.jline=10",
+        "org.apache.felix=20",
+    ],
 )
 
 bundles(
@@ -44,6 +53,10 @@ bundles(
     provides = [
         "declarative-services",
     ],
+    start_levels = [
+        "org.osgi=20",
+        "org.apache.felix=30",
+    ],
 )
 
 bundles(
@@ -51,5 +64,8 @@ bundles(
     bundles = [
         artifact("org.ops4j.pax.logging:pax-logging-api"),
         artifact("org.ops4j.pax.logging:pax-logging-log4j2"),
+    ],
+    start_levels = [
+        "org.ops4j.pax.logging=40",
     ],
 )

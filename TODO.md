@@ -12,5 +12,7 @@
 - TODO shfmt / shellcheck
 - TODO precommit
 - TODO figure out a way to load custom log4j configs
-- TODO design bundles.index format, include start-level, etc.
+- DONE design bundles.index format, include start-level, etc.
 - DONE remove map\_mvn\_artifact everywhere
+- TODO cleanup vavr try stuff in launcher. Just messy code
+- TODO implement bundles.index index: support

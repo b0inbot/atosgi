@@ -8,9 +8,13 @@ def _bundles_impl(ctx):
     sl = ctx.actions.declare_file(
         ctx.label.name + ".index",
     )
+    extra = ""
+    if ctx.attr.start_levels:
+        extra = "\n".join(["startlevel:" + x for x in ctx.attr.start_levels]) + "\n"
+
     ctx.actions.write(
         sl,
-        "\n".join([x.short_path for x in bundles]) + "\n",
+        "\n".join(["bundle:" + x.short_path for x in bundles]) + "\n" + extra,
     )
 
     return [
@@ -20,6 +24,7 @@ def _bundles_impl(ctx):
 
 bundles = rule(
     attrs = {
+        "start_levels": attr.string_list(),
         "provides": attr.string_list(),
         "depends": attr.string_list(),
         "bundles": attr.label_list(

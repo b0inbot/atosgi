@@ -3,6 +3,7 @@ load("//private:artifact.bzl", artifact = "atosgi_artifact")
 java_library(
     name = "launcher-lib",
     srcs = [
+        "BundleIndex.java",
         "Main.java",
         "XManifest.java",
     ],
