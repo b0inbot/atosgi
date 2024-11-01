@@ -69,3 +69,25 @@ bundles(
         "org.ops4j.pax.logging=40",
     ],
 )
+
+bundles(
+    name = "netty",
+    bundles = [
+        artifact("io.netty:netty-common"),
+        artifact("io.netty:netty-buffer"),
+        artifact("io.netty:netty-transport"),
+        artifact("io.netty:netty-handler"),
+        artifact("io.netty:netty-codec"),
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-codec-http2"),
+        artifact("io.netty:netty-codec-socks"),
+        artifact("io.netty:netty-resolver"),
+        artifact("io.netty:netty-transport-native-unix-common"),
+        artifact("io.netty:netty-transport-native-epoll"),
+        artifact("io.netty:netty-transport-classes-epoll"),
+        artifact("io.netty:netty-handler-proxy"),
+    ],
+    start_levels = [
+        "io.netty=45",
+    ],
+)

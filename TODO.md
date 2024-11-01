@@ -5,7 +5,7 @@
 - TODO remove all XManifest stuff
 - TODO better launcher documentation
 - DONE logging bundle group
-- TODO netty bundle group
+- DONE netty bundle group
 - TODO generate pom.xml out of our jars (useful for security scanners)
 - TODO add markdown formatter tool (NOT prettier, maybe comrack)
 - TODO design some form of publishing workflow for bundles

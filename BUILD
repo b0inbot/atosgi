@@ -37,6 +37,7 @@ launcher(
     bundles = [
         "@atosgi//bundles:felix-default",
         "@atosgi//bundles:extras",
+        "@atosgi//bundles:netty",
     ],
     visibility = ["//visibility:public"],
 )
