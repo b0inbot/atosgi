@@ -1,4 +1,6 @@
 #!/bin/sh
 
+. tools/shared.sh
+
 set -ex
-find . -iname \*md -print0 | xargs --null -t -I {} comrak {} --to commonmark -o {}
+ffp0 \*\.md | xargsp0 comrak {} --to commonmark -o {}

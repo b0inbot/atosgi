@@ -9,8 +9,8 @@
 - DONE generate pom.xml out of our jars (useful for security scanners)
 - TODO add markdown formatter tool (NOT prettier, maybe comrack)
 - TODO design some form of publishing workflow for bundles
-- TODO shfmt / shellcheck
-- TODO precommit
+- DONE shfmt / shellcheck
+- DONE precommit
 - TODO figure out a way to load custom log4j configs
 - DONE design bundles.index format, include start-level, etc.
 - DONE remove map\_mvn\_artifact everywhere
@@ -18,3 +18,4 @@
 - TODO implement bundles.index index: support
 - TODO port tools/pomgen to Java
 - TODO \_deploy.jar targets on launcher rules do not work
+- TODO make precommit a bazel target
