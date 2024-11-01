@@ -17,3 +17,4 @@
 - TODO cleanup vavr try stuff in launcher. Just messy code
 - TODO implement bundles.index index: support
 - TODO port tools/pomgen to Java
+- TODO \_deploy.jar targets on launcher rules do not work
