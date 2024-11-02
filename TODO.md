@@ -19,3 +19,4 @@
 - TODO port tools/pomgen to Java
 - TODO \_deploy.jar targets on launcher rules do not work
 - TODO make precommit a bazel target
+- TODO get the stuff working with eclipse OSGI too
