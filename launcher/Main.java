@@ -62,7 +62,11 @@ public class Main {
               "org.osgi.framework.storage.clean",
               "onFirstInit",
               "org.osgi.framework.storage",
-              cache.toString());
+              cache.toString(),
+              "org.osgi.framework.system.packages.extra",
+              "javax.*,org.xml.sax,org.xml.sax.helpers",
+              "org.osgi.framework.bootdelegation",
+              "javax.*,org.xml.sax,org.xml.sax.helpers");
 
       framework = getFrameworkFactory().newFramework(configProps);
       framework.init();
