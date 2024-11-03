@@ -17,6 +17,8 @@ def _bnd_impl(ctx):
     bndlines.append("-standalone:")
     bndlines.append("-classpath: " + ", ".join(bundle_basenames))
     bndlines.append("-output: " + outjar.basename)
+    bndlines.append("-removeheaders: Bnd-LastModified")
+    bndlines.append("-reproducible: true")
     bndlines.append("Target-Label: " + str(ctx.label))
 
     for k in ctx.attr.bnd_inputs:
