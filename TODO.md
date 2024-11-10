@@ -16,7 +16,7 @@
 - DONE remove map\_mvn\_artifact everywhere
 - TODO cleanup vavr try stuff in launcher. Just messy code
 - TODO implement bundles.index index: support
-- TODO port tools/pomgen to Java
+- DONE port tools/pomgen to Java
 - TODO \_deploy.jar targets on launcher rules do not work
 - TODO make precommit a bazel target
 - TODO get the stuff working with eclipse OSGI too

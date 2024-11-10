@@ -11,7 +11,8 @@ set -ex
 
 bash tools/format/markdown-format.sh
 buildifier -r -v ./
-bash tools/pomgen/pomgen.sh | xmllint --format --pretty 1 --noblanks - >pom.xml
+bazel run tools/pomgen:pomgen
+xmllint --format --pretty 1 --noblanks -o pom.xml pom.xml
 bash tools/format/xml-format.sh
 bash tools/format/sh-format.sh
 bash tools/lint/sh-lint.sh
