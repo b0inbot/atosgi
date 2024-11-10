@@ -16,6 +16,7 @@ java_library(
 java_binary(
     name = "zipoverlay",
     main_class = "boinsoft.atosgi.tools.zipoverlay.ZipOverlay",
+    visibility = ["//visibility:public"],
     runtime_deps = [
         ":zipoverlay-lib",
     ],

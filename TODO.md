@@ -22,3 +22,4 @@
 - TODO get the stuff working with eclipse OSGI too
 - TODO markdown cleanup ignores end-of-line space in codeblocks.
 - TODO implement zip\_overlay rule
+- TODO refactor visibility so most is `__pkg__`
