@@ -20,3 +20,5 @@
 - TODO \_deploy.jar targets on launcher rules do not work
 - TODO make precommit a bazel target
 - TODO get the stuff working with eclipse OSGI too
+- TODO markdown cleanup ignores end-of-line space in codeblocks.
+- TODO implement zip\_overlay rule
