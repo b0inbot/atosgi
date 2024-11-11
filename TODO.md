@@ -23,3 +23,7 @@
 - TODO markdown cleanup ignores end-of-line space in codeblocks.
 - TODO implement zip\_overlay rule
 - TODO refactor visibility so most is `__pkg__`
+- TODO add autoinstall.d/ installation method
+- TODO rip out old bundle index for now.
+- TODO look into making zip\_overlay executable
+- TODO lots of todos in the zip\_overlay usage in launcher/BUILD

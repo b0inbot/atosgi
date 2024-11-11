@@ -5,6 +5,7 @@ module(
 
 bazel_dep(name = "aspect_rules_lint", version = "1.0.3")
 bazel_dep(name = "rules_java", version = "7.6.5")
+bazel_dep(name = "rules_pkg", version = "1.0.1")
 
 http_file = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 

@@ -16,19 +16,21 @@ public class ZipOverlay {
     System.err.printf("[INFO] %s\n", msg);
   }
 
+  public static void warn(String msg) {
+    System.err.printf("[WARN] %s\n", msg);
+  }
+
   static void copyEntry(ZipOutputStream out, ReadableZipEntry rze)
       throws IOException, ZipException {
     try {
       out.putNextEntry(rze.ze());
     } catch (ZipException exn) {
       if (exn.getMessage().startsWith("duplicate entry:")) {
-        if (rze.name().equals("META-INF/MANIFEST.MF")) {
-          return;
+        // TODO: allow configurable handling of duplicate entries
+        if (!rze.isDirectory()) {
+          warn("got duplicate entry " + rze.name());
         }
-
-        if (rze.isDirectory()) {
-          return;
-        }
+        return;
       }
       throw exn;
     }

@@ -1,4 +1,7 @@
+load("@rules_pkg//pkg:zip.bzl", "pkg_zip")
 load("//private:artifact.bzl", artifact = "atosgi_artifact")
+load("//private:bnd.bzl", "bnd")
+load("//private:zip_overlay.bzl", "zip_overlay")
 
 java_library(
     name = "launcher-lib",
@@ -13,5 +16,59 @@ java_library(
         artifact("org.apache.felix:org.apache.felix.framework"),
         artifact("org.apache.felix:org.apache.felix.main"),
         artifact("io.vavr:vavr"),
+    ],
+)
+
+java_binary(
+    name = "launcher",
+    main_class = "boinsoft.atosgi.launcher.Main",
+    runtime_deps = [
+        ":launcher-lib",
+    ],
+)
+
+###
+### Below is an example of what we might move into a "release" macro,
+### we take the bundles and wrap them into a zip
+### and merge that zip into our "super-jar"
+###
+
+# creates classpath:/autoinstall.d/*.jar that
+# can be classpath scanned to install
+pkg_zip(
+    name = "launcher_autoinstall",
+    srcs = [
+        "@atosgi//bundles:felix-default",
+    ],
+    package_dir = "autoinstall.d",
+)
+
+# We can provide arbitrary files into a zip
+# and merge it with our release, providing
+# our "overrides" show up first
+# in the deps list in zip_overlay.
+pkg_zip(
+    name = "launcher_config",
+    srcs = [
+        # this file is already in launcher_deploy.jar but we
+        # override it here
+        "config.properties",
+    ],
+)
+
+#
+# creates the final "release JAR"
+#
+zip_overlay(
+    name = "launcher_release",
+    output_file = "launcher-release.jar",
+    # deps are applied in-order TODO: figure out a better way
+    deps = [
+        # 1
+        ":launcher_config",
+        # 2
+        ":launcher_deploy.jar",
+        # 3
+        ":launcher_autoinstall",
     ],
 )
