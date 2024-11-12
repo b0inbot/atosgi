@@ -9,7 +9,9 @@ bazel_dep(name = "rules_pkg", version = "1.0.1")
 
 http_file = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 
-http_file(
+http_jar = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_jar")
+
+http_jar(
     name = "biz.aQute.bnd",
     sha256 = "674080fc8bb766af9bd721f4847467c6a7a25de3ea6a444525241b34126688b1",
     urls = ["https://bndtools.jfrog.io/artifactory/libs-snapshot/biz/aQute/bnd/biz.aQute.bnd/7.0.0/biz.aQute.bnd-7.0.0.jar"],

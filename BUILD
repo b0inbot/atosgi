@@ -1,21 +1,8 @@
 load("@atosgi//:defs.bzl", "launcher")
 
-genrule(
-    name = "bnd-file",
-    srcs = [
-        "@biz.aQute.bnd//file",
-    ],
-    outs = ["bnd-file.jar"],
-    cmd = "cp $< $@",
-    executable = True,
-    visibility = ["//visibility:public"],
-)
-
-java_import(
+alias(
     name = "bnd-lib",
-    jars = [
-        ":bnd-file",
-    ],
+    actual = "@biz.aQute.bnd//jar",
 )
 
 java_binary(
