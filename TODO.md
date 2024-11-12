@@ -27,3 +27,4 @@
 - TODO rip out old bundle index for now.
 - TODO look into making zip\_overlay executable
 - TODO lots of todos in the zip\_overlay usage in launcher/BUILD
+- TODO rebuild launcher

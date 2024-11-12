@@ -20,7 +20,7 @@ target. The output of the bnd rule is an OSGI bundle that can be deployed.
 "bundles" is used for grouping related OSGI bundles together in a single group. In
 documentation these are called Bundle Groups (see below).
 
-"launcher" is used for connecting your bundle groups to a bazel target
+\[TODO\] "launcher" is used for connecting your bundle groups to a bazel target
 which can be run to launch OSGI applications.
 
 See [examples/hello/BUILD](examples/hello/BUILD) for annotated usage.

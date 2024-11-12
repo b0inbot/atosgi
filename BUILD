@@ -18,13 +18,3 @@ alias(
     name = "format",
     actual = "//tools/format",
 )
-
-launcher(
-    name = "gogo",
-    bundles = [
-        "@atosgi//bundles:felix-default",
-        "@atosgi//bundles:extras",
-        "@atosgi//bundles:netty",
-    ],
-    visibility = ["//visibility:public"],
-)
