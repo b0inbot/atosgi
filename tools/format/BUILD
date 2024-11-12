@@ -3,22 +3,9 @@ load("@rules_java//java:defs.bzl", "java_binary")
 
 package(default_visibility = ["//:__subpackages__"])
 
-genrule(
-    name = "java-format-file",
-    srcs = [
-        "@google-java-format//file",
-    ],
-    outs = ["java-format-file.jar"],
-    cmd = "cp $< $@",
-    executable = True,
-    visibility = ["//visibility:public"],
-)
-
-java_import(
+alias(
     name = "java-format-lib",
-    jars = [
-        ":java-format-file",
-    ],
+    actual = "@google-java-format//jar",
 )
 
 java_binary(

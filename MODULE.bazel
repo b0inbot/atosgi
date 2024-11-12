@@ -7,8 +7,6 @@ bazel_dep(name = "aspect_rules_lint", version = "1.0.3")
 bazel_dep(name = "rules_java", version = "7.6.5")
 bazel_dep(name = "rules_pkg", version = "1.0.1")
 
-http_file = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
-
 http_jar = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_jar")
 
 http_jar(
@@ -17,7 +15,7 @@ http_jar(
     urls = ["https://bndtools.jfrog.io/artifactory/libs-snapshot/biz/aQute/bnd/biz.aQute.bnd/7.0.0/biz.aQute.bnd-7.0.0.jar"],
 )
 
-http_file(
+http_jar(
     name = "google-java-format",
     sha256 = "33068bbbdce1099982ec1171f5e202898eb35f2919cf486141e439fc6e3a4203",
     url = "https://github.com/google/google-java-format/releases/download/v1.17.0/google-java-format-1.17.0-all-deps.jar",
