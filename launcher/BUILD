@@ -8,7 +8,6 @@ java_library(
     srcs = [
         "BundleIndex.java",
         "Main.java",
-        "XManifest.java",
     ],
     visibility = ["//visibility:public"],
     deps = [
@@ -38,7 +37,11 @@ java_binary(
 pkg_zip(
     name = "launcher_autoinstall",
     srcs = [
+        "@atosgi//bundles:configadmin",
+        "@atosgi//bundles:declarative-services",
         "@atosgi//bundles:felix-default",
+        "@atosgi//bundles:fileinstall",
+        "@atosgi//bundles:pax-logging-log4j2",
     ],
     package_dir = "autoinstall.d",
 )

@@ -25,7 +25,6 @@ def _zip_overlay_impl(ctx):
 
     return [
         DefaultInfo(files = depset([out])),
-        #JavaInfo(output_jar = outjar, compile_jar = None),
     ]
 
 zip_overlay = rule(

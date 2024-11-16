@@ -1,5 +1,7 @@
 package boinsoft.atosgi.example;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.osgi.service.component.annotations.*;
 
 /**
@@ -15,7 +17,11 @@ import org.osgi.service.component.annotations.*;
     service = Object.class)
 public class Hello {
 
+  private static final Logger logger = LogManager.getLogger("HelloWorld");
+
   public String status() {
+    logger.debug("debug invocation status feeling fine");
+    logger.warn("debug invocation status feeling fine");
     return "status=feeling-fine";
   }
 

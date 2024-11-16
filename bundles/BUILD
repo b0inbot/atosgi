@@ -71,6 +71,26 @@ bundles(
 )
 
 bundles(
+    name = "configadmin",
+    bundles = [
+        artifact("org.apache.felix:org.apache.felix.configadmin"),
+    ],
+    start_levels = [
+        "org.apache.felix.configadmin=35",
+    ],
+)
+
+bundles(
+    name = "fileinstall",
+    bundles = [
+        artifact("org.apache.felix:org.apache.felix.fileinstall"),
+    ],
+    start_levels = [
+        "org.apache.felix.fileinstall=30",
+    ],
+)
+
+bundles(
     name = "netty",
     bundles = [
         artifact("io.netty:netty-common"),

@@ -11,7 +11,6 @@ import java.util.stream.*;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.launch.*;
-import org.osgi.framework.startlevel.BundleStartLevel;
 import org.osgi.framework.startlevel.FrameworkStartLevel;
 
 /**
@@ -39,7 +38,36 @@ public class Main {
 
   private static Framework framework = null;
 
-  public static void main(String[] args) {
+  public static Map<String, String> resolveConfigProps(Path cache) throws IOException {
+    Map<String, String> configProps =
+        new HashMap<>(
+            Map.of(
+                "felix.log.level",
+                "2",
+                "org.osgi.framework.storage.clean",
+                "onFirstInit",
+                "org.osgi.framework.storage",
+                cache.toString(),
+                "org.osgi.framework.system.packages.extra",
+                "javax.*,org.xml.sax,org.xml.sax.helpers",
+                "org.osgi.framework.bootdelegation",
+                "javax.*,org.xml.sax,org.xml.sax.helpers"));
+
+    // use config.properties in classpath to override defaults
+    var is = Main.class.getClassLoader().getResourceAsStream("config.properties");
+    if (is == null) {
+      return configProps;
+    }
+    var prop = new Properties();
+    prop.load(is);
+    for (String key : prop.stringPropertyNames()) {
+      configProps.put(key, prop.getProperty(key).toString());
+    }
+
+    return configProps;
+  }
+
+  public static void main(String[] args) throws IOException {
     info("atosgi-launcher");
     Path cwd = Path.of("").toAbsolutePath();
     info("== CWD: " + cwd.toString());
@@ -50,70 +78,34 @@ public class Main {
       Path tmp = FileSystems.getDefault().getPath("/tmp");
       Path cache = Files.createTempDirectory(tmp, "atosgi-cache");
 
-      // find and install all the bundles in our JAVA_RUNFILES manifest. This is for
-      // running via bazel run :target but we should eventually use it instead of
-      // prefix scanning in our classpath.
-      var indices = resolveIndexes();
+      Map<String, String> configProps = resolveConfigProps(cache);
 
-      Map<String, String> configProps =
-          Map.of(
-              "felix.log.level",
-              "2",
-              "org.osgi.framework.storage.clean",
-              "onFirstInit",
-              "org.osgi.framework.storage",
-              cache.toString(),
-              "org.osgi.framework.system.packages.extra",
-              "javax.*,org.xml.sax,org.xml.sax.helpers",
-              "org.osgi.framework.bootdelegation",
-              "javax.*,org.xml.sax,org.xml.sax.helpers");
+      // the config specifies which bundle groups to try to load.
+      String bundleGroupsData = configProps.get("atosgi.autoinstall.bundle-groups");
+      if (bundleGroupsData == null) {
+        bundleGroupsData = "";
+      }
+      List<String> bundleGroups =
+          Arrays.asList(bundleGroupsData.split(",")).stream().map(String::trim).toList();
 
+      var sleepIntervalMs = 100; // TODO: load from atosgi.* property
+      var defaultStartLevel = 50; // TODO: load from atosgi.* property
+
+      // each index in this list is a list of bundles that make up a single bundle group
+      var indices = resolveIndexes(bundleGroups);
+
+      // run!
       framework = getFrameworkFactory().newFramework(configProps);
       framework.init();
-
-      // build a Classpath Filesystem we can re-use when we have multiple bundle
-      // folders to load from
-      ClassLoader cl = ClassLoader.getSystemClassLoader();
-      URI uri = cl.getResource("META-INF/MANIFEST.MF").toURI();
-      FileSystem cpFileSystem =
-          FileSystems.newFileSystem(uri, Collections.<String, Object>emptyMap());
-      Path p = cpFileSystem.getPath("META-INF", "MANIFEST.MF");
-
-      // TODO: delete all XManifest usage with something else. File is empty on bazel run :...
-      XManifest manifest = new XManifest(Files.newInputStream(p));
-      var defaultStartLevel = manifest.getInt("Atosgi-StartLevel", 50).get();
-      var sleepIntervalMs = manifest.getInt("Atosgi-SleepIntervalMs", 100).get();
 
       // find and install all the bundles embedded in our super-JAR
       BundleContext ctx = framework.getBundleContext();
       List<Bundle> bundles = new ArrayList<Bundle>();
 
-      Map<String, Prefix> bundlePrefixes =
-          manifest
-              .getString("Atosgi-BundlePrefix")
-              .orElse(Option.of("bundles/=10"))
-              .map(Main::resolveBundlePrefixes)
-              .get();
-
-      for (Prefix prefix : bundlePrefixes.values()) {
-        List<String> bundlePaths = getClasspathBundles(prefix, cpFileSystem);
-        for (String s : bundlePaths) {
-          if (!s.endsWith(".jar")) {
-            continue;
-          }
-          InputStream is = Main.class.getClassLoader().getResourceAsStream(s);
-          Bundle b = ctx.installBundle(s.toString(), is);
-          b.adapt(BundleStartLevel.class).setStartLevel(prefix.startLevel());
-          bundles.add(b);
-        }
-      }
-
       for (var tryIndex : indices) {
-        tryIndex.onSuccess(
-            (index) ->
-                index
-                    .install(ctx, defaultStartLevel)
-                    .forEach((tryBundle) -> tryBundle.onSuccess((b) -> bundles.add(b))));
+        var index = tryIndex.get();
+        var l = index.install(ctx, defaultStartLevel);
+        bundles.addAll(l.stream().map(Try::get).toList());
       }
       framework.start();
 
@@ -184,19 +176,21 @@ public class Main {
     return al;
   }
 
-  private static List<Try<BundleIndex>> resolveIndexes() throws IOException {
-    var env = System.getenv();
-    var runFiles = env.get("JAVA_RUNFILES");
-    if (runFiles == null) {
-      return new ArrayList<>();
-    }
-    var fs = FileSystems.getDefault();
-    var manifestFile = fs.getPath(runFiles + "/MANIFEST");
-    return Files.lines(manifestFile)
-        .map(line -> line.split(" "))
-        .filter(tokens -> tokens[0].endsWith(".index"))
-        .map(tokens -> FileSystems.getDefault().getPath(tokens[1]))
-        .map(BundleIndex::parse)
+  private static <T> T peekPrint(T t) {
+    System.out.println("==== " + t);
+    return t;
+  }
+
+  private static List<Try<BundleIndex>> resolveIndexes(List<String> groups) throws IOException {
+    ClassLoader cl = Main.class.getClassLoader();
+    // TODO: we should be able to resolve indexes from arbitrary locations: http://, classpath://,
+    // etc.
+    return groups.stream()
+        .map(
+            group -> Optional.ofNullable((URL) cl.getResource("autoinstall.d/" + group + ".index")))
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(BundleIndex::parseTry)
         .collect(Collectors.toList());
   }
 

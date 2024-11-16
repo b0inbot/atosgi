@@ -1,4 +1,4 @@
-load("@atosgi//:defs.bzl", "atosgi_artifact", "bnd", "bundles", "launcher")
+load("@atosgi//:defs.bzl", "atosgi_artifact", "bnd", "bundles")
 
 # We define our java_library like any other library, except that if we
 # need OSGI APIs, we include them as deps.
@@ -16,6 +16,7 @@ java_library(
     ],
     deps = [
         atosgi_artifact("org.osgi:osgi.cmpn"),
+        atosgi_artifact("org.ops4j.pax.logging:pax-logging-api"),
     ],
 )
 

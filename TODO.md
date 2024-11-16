@@ -2,7 +2,7 @@
 
 - BLOCKED add buildifier - https://github.com/bazelbuild/buildtools/issues/1204 - still some issues somewhere.
 - TODO design `osgi_bundle` rule
-- TODO remove all XManifest stuff
+- DONE remove all XManifest stuff
 - TODO better launcher documentation
 - DONE logging bundle group
 - DONE netty bundle group
@@ -11,20 +11,22 @@
 - TODO design some form of publishing workflow for bundles
 - DONE shfmt / shellcheck
 - DONE precommit
-- TODO figure out a way to load custom log4j configs
+- DONE figure out a way to load custom log4j configs
 - DONE design bundles.index format, include start-level, etc.
 - DONE remove map\_mvn\_artifact everywhere
 - TODO cleanup vavr try stuff in launcher. Just messy code
 - TODO implement bundles.index index: support
 - DONE port tools/pomgen to Java
-- TODO \_deploy.jar targets on launcher rules do not work
+- WONTFIX \_deploy.jar targets on launcher rules do not work
 - TODO make precommit a bazel target
 - TODO get the stuff working with eclipse OSGI too
 - TODO markdown cleanup ignores end-of-line space in codeblocks.
-- TODO implement zip\_overlay rule
+- DONE implement zip\_overlay rule
 - TODO refactor visibility so most is `__pkg__`
-- TODO add autoinstall.d/ installation method
-- TODO rip out old bundle index for now.
+- DONE add autoinstall.d/ installation method
+- DONE rip out old bundle index for now.
 - TODO look into making zip\_overlay executable
 - TODO lots of todos in the zip\_overlay usage in launcher/BUILD
-- TODO rebuild launcher
+- DONE rebuild launcher
+- TODO better config loading into the configadmin
+- TODO fileinstall integration with bazel

@@ -12,16 +12,13 @@ NOTE: currently requires bazel8 due to use of new "symbolic macros"
 
 ### Usage
 
-The main rules are "bnd", "bundles", "launcher".
+The main rules are "bnd", "bundles".
 
 "bnd" is used for applying bnd rules to a java\_library
 target. The output of the bnd rule is an OSGI bundle that can be deployed.
 
 "bundles" is used for grouping related OSGI bundles together in a single group. In
 documentation these are called Bundle Groups (see below).
-
-\[TODO\] "launcher" is used for connecting your bundle groups to a bazel target
-which can be run to launch OSGI applications.
 
 See [examples/hello/BUILD](examples/hello/BUILD) for annotated usage.
 
@@ -37,11 +34,19 @@ format and behavior is currently in flux.
 
 ## Useful targets
 
-- `@atosgi//:gogo` - bazel run target which drops straight into a Apache Felix gogo shell.
 - `@atosgi//:bnd` - Executable JAR of the bnd CLI. Usable out of the box\!\!
 - `@atosgi//bundles:declarative-services` - Apache Felix SCR implementation of OSGI Declarative Services, as a "Bundle Group"
 - `@atosgi//bundles:felix-default` - A Bundle Group that includes the standard OSGI bundles that come with an Apache Felix release.
+- `@atosgi//bundles:config-admin` - A ConfigAdmin bundle group. Currently Apache Felix ConfigAdmin.
+- `@atosgi//bundles:pax-logging-log4j2` - PAX Logging API + Log4j2 implementation.
 - `@@rules_jvm_external++maven+boinsoft_atosgi_maven//:all` - The maven artifacts that atosgi exposes and uses.
+- `@atosgi//launcher:launcher_release` - The Launcher release.
+
+## Running the launcher
+
+You can launch the launcher from the @atosgi root:
+
+    bazel build launcher:launcher_release && java -jar bazel-bin/launcher/launcher-release.jar
 
 ## Important version details
 

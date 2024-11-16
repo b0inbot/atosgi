@@ -1,14 +1,15 @@
 package boinsoft.atosgi.launcher;
 
 import io.vavr.control.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 import java.util.jar.*;
 import java.util.stream.*;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.launch.*;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.startlevel.BundleStartLevel;
 
 /**
@@ -24,47 +25,43 @@ import org.osgi.framework.startlevel.BundleStartLevel;
  * bundle.symbolicName begins with startlevelname set start level of bundle
  */
 public class BundleIndex {
-  public static record PendingBundles(String source, String URI) {}
+  public static record PendingBundle(String filename) {}
 
-  public List<PendingBundles> pendingBundles;
+  public List<PendingBundle> pendingBundles;
   public Map<String, Integer> startLevels;
-  public Path path;
-  public String folder;
-  public String indexName;
 
-  public BundleIndex(Path p) {
-    path = p;
+  public BundleIndex() throws URISyntaxException {
     pendingBundles = new ArrayList<>();
     startLevels = new HashMap<>();
-    folder = path.getParent().getFileName().toString();
-    indexName = path.getFileName().toString().replace(".index", "");
+  }
+
+  protected Bundle installBundle(BundleContext ctx, int defaultStartLevel, PendingBundle pending)
+      throws BundleException, IOException {
+    // TODO: the location of the bundle should be relative to the
+    // source of the index. Only in some cases will the location
+    // be within the classpath. This requires some smarter resolution
+    // engine.
+    var is = getClass().getClassLoader().getResourceAsStream("autoinstall.d/" + pending.filename);
+    Bundle b = ctx.installBundle("classpath://autoinstall.d/" + pending.filename, is);
+    b.adapt(BundleStartLevel.class).setStartLevel(defaultStartLevel);
+    for (var e : startLevels.keySet()) {
+      if (b.getSymbolicName().startsWith(e)) {
+        b.adapt(BundleStartLevel.class).setStartLevel(startLevels.get(e));
+      }
+    }
+    return b;
   }
 
   public List<Try<Bundle>> install(BundleContext ctx, int defaultStartLevel) {
     return (List<Try<Bundle>>)
         pendingBundles.stream()
-            .map(
-                (pending) -> {
-                  return Try.of(
-                      () -> {
-                        Bundle b = ctx.installBundle(pending.URI);
-                        b.adapt(BundleStartLevel.class).setStartLevel(defaultStartLevel);
-                        for (var e : startLevels.keySet()) {
-                          if (b.getSymbolicName().startsWith(e)) {
-                            b.adapt(BundleStartLevel.class).setStartLevel(startLevels.get(e));
-                          }
-                        }
-                        return b;
-                      });
-                })
+            .map((pending) -> Try.of(() -> installBundle(ctx, defaultStartLevel, pending)))
             .collect(Collectors.toList());
   }
 
   void processLine(String line) {
     if (line.startsWith("bundle:")) {
-      pendingBundles.add(
-          new PendingBundles(
-              indexName, "file:" + line.substring("bundle:".length(), line.length())));
+      pendingBundles.add(new PendingBundle(line.substring("bundle:".length(), line.length())));
     } else if (line.startsWith("startlevel:")) {
       String[] tokens = line.substring("startlevel:".length(), line.length()).split("=");
       startLevels.put(tokens[0], Integer.parseInt(tokens[1]));
@@ -73,15 +70,12 @@ public class BundleIndex {
     // TODO: refine exceptions
   }
 
-  public static Try<BundleIndex> parse(Path p) {
+  public static Try<BundleIndex> parseTry(URL url) {
     return Try.of(
         () -> {
-          BundleIndex idx = new BundleIndex(p);
-          Files.lines(p)
-              .forEach(
-                  line -> {
-                    idx.processLine(line);
-                  });
+          BundleIndex idx = new BundleIndex();
+          var r = new BufferedReader(new InputStreamReader(url.openStream()));
+          while (r.ready()) idx.processLine(r.readLine());
           return idx;
         });
   }

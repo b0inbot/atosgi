@@ -14,7 +14,7 @@ def _bundles_impl(ctx):
 
     ctx.actions.write(
         sl,
-        "\n".join(["bundle:" + x.short_path for x in bundles]) + "\n" + extra,
+        "\n".join(["bundle:" + x.basename for x in bundles]) + "\n" + extra,
     )
 
     return [
