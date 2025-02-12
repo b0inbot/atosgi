@@ -30,3 +30,4 @@
 - DONE rebuild launcher
 - TODO better config loading into the configadmin
 - TODO fileinstall integration with bazel
+- TODO easy way to turn off interactive gogo
