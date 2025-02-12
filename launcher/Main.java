@@ -68,15 +68,25 @@ public class Main {
   }
 
   public static void main(String[] args) throws IOException {
-    info("atosgi-launcher");
     Path cwd = Path.of("").toAbsolutePath();
-    info("== CWD: " + cwd.toString());
+    Path cache;
+    // TODO: cache should be more configerable
+    boolean cleanupCache = true;
 
-    try {
-
+    if (args.length == 0) {
       // TODO: load tmp from env
       Path tmp = FileSystems.getDefault().getPath("/tmp");
-      Path cache = Files.createTempDirectory(tmp, "atosgi-cache");
+      cache = Files.createTempDirectory(tmp, "atosgi-cache");
+    } else {
+      cache = Path.of(args[0]);
+      cleanupCache = false;
+    }
+
+    info("atosgi-launcher");
+    info("== CWD: " + cwd.toString());
+    info("== Cache: " + cache.toString());
+
+    try {
 
       Map<String, String> configProps = resolveConfigProps(cache);
 
@@ -123,9 +133,11 @@ public class Main {
 
       framework.waitForStop(0);
 
-      info("cleaning up tmp " + cache.toString());
-      try (var dirStream = Files.walk(cache)) {
-        dirStream.map(Path::toFile).sorted(Comparator.reverseOrder()).forEach(File::delete);
+      if (cleanupCache) {
+        info("cleaning up tmp " + cache.toString());
+        try (var dirStream = Files.walk(cache)) {
+          dirStream.map(Path::toFile).sorted(Comparator.reverseOrder()).forEach(File::delete);
+        }
       }
     } catch (Exception ex) {
       System.err.println("Could not create framework: " + ex);
