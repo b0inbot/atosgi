@@ -50,7 +50,7 @@ You can launch the launcher from the @atosgi root:
 
 ## Important version details
 
-- bazel        - 8.0.0rc1 . 7.x and below are NOT SUPPORTED
+- bazel        - 8.0 and above. Currently developed on 8.0.1
 - bnd          - 7.0.0
 - apache-felix - 7.0.5
 - OSGI spec    - 8.0.0
