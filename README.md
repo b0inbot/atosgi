@@ -46,7 +46,8 @@ format and behavior is currently in flux.
 
 You can launch the launcher from the @atosgi root:
 
-    bazel build launcher:launcher_release && java -jar bazel-bin/launcher/launcher-release.jar
+    bazel build --config release
+    java -jar bazel-bin/launcher/launcher-release.jar
 
 ## Important version details
 

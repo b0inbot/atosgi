@@ -31,3 +31,4 @@
 - TODO better config loading into the configadmin
 - TODO fileinstall integration with bazel
 - TODO easy way to turn off interactive gogo
+- TODO make the launcher-release target executable, somehow
