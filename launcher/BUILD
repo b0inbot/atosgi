@@ -15,6 +15,7 @@ java_library(
     name = "launcher-lib",
     srcs = [
         "BundleIndex.java",
+        "ClasspathScanner.java",
         "Main.java",
     ],
     deps = [
@@ -44,10 +45,11 @@ java_binary(
 pkg_zip(
     name = "launcher_autoinstall",
     srcs = [
+        "@atosgi//bundles:bundlerepository",
         "@atosgi//bundles:configadmin",
         "@atosgi//bundles:declarative-services",
-        "@atosgi//bundles:felix-default",
         "@atosgi//bundles:fileinstall",
+        "@atosgi//bundles:gogo",
         "@atosgi//bundles:pax-logging-log4j2",
     ],
     package_dir = "autoinstall.d",

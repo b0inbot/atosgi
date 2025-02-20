@@ -1,6 +1,6 @@
 def _launcher_impl(name, targets = [], bundles = [], repos = [], *args, **kwargs):
     default_bundles = [
-        "@atosgi//bundles:felix-default",
+        "@atosgi//bundles:gogo",
         "@atosgi//bundles:declarative-services",
     ]
 

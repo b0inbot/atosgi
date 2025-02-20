@@ -31,9 +31,18 @@ bundles(
 )
 
 bundles(
-    name = "felix-default",
+    name = "bundlerepository",
     bundles = [
         artifact("org.apache.felix:org.apache.felix.bundlerepository"),
+    ],
+    start_levels = [
+        "org.apache.felix=20",
+    ],
+)
+
+bundles(
+    name = "gogo",
+    bundles = [
         artifact("org.apache.felix:org.apache.felix.gogo.command"),
         artifact("org.apache.felix:org.apache.felix.gogo.jline"),
         artifact("org.apache.felix:org.apache.felix.gogo.runtime"),

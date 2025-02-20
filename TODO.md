@@ -30,5 +30,7 @@
 - DONE rebuild launcher
 - TODO better config loading into the configadmin
 - TODO fileinstall integration with bazel
-- TODO easy way to turn off interactive gogo
+- DONE easy way to turn off interactive gogo
 - TODO make the launcher-release target executable, somehow
+- TODO fully hierarchical bundle management
+- DONE classpath scannling within the launcher jar

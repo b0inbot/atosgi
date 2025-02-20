@@ -82,9 +82,16 @@ public class Main {
       cleanupCache = false;
     }
 
+    // TODO: even when this is off, if the gogo bundles have been previously loaded
+    // into the cache, then this has no effect. We essentually need a way of
+    // marking a series of bundles as provides feature "interactive shell" and then
+    // turn that feature off before starting up.
+    boolean nonInteractive = System.getProperty("nonInteractive") != null;
+
     info("atosgi-launcher");
     info("== CWD: " + cwd.toString());
     info("== Cache: " + cache.toString());
+    info("== Interactive: " + Boolean.toString(!nonInteractive));
 
     try {
 
@@ -92,11 +99,17 @@ public class Main {
 
       // the config specifies which bundle groups to try to load.
       String bundleGroupsData = configProps.get("atosgi.autoinstall.bundle-groups");
+      List<String> bundleGroups;
       if (bundleGroupsData == null) {
-        bundleGroupsData = "";
+        ClasspathScanner scanner = new ClasspathScanner("/autoinstall.d");
+        bundleGroups = scanner.scan();
+        if (nonInteractive) {
+          bundleGroups = bundleGroups.stream().filter(x -> !x.equals("gogo")).toList();
+        }
+      } else {
+        bundleGroups =
+            Arrays.asList(bundleGroupsData.split(",")).stream().map(String::trim).toList();
       }
-      List<String> bundleGroups =
-          Arrays.asList(bundleGroupsData.split(",")).stream().map(String::trim).toList();
 
       var sleepIntervalMs = 100; // TODO: load from atosgi.* property
       var defaultStartLevel = 50; // TODO: load from atosgi.* property
@@ -204,12 +217,6 @@ public class Main {
         .map(Optional::get)
         .map(BundleIndex::parseTry)
         .collect(Collectors.toList());
-  }
-
-  private static Map<String, Prefix> resolveBundlePrefixes(String prefixes) {
-    return Arrays.stream(prefixes.split(","))
-        .map(Prefix::parse)
-        .collect(Collectors.toMap(p -> p.folder, p -> p));
   }
 
   private static List<String> getClasspathBundles(Prefix prefix, FileSystem fileSystem)

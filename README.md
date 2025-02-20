@@ -36,7 +36,9 @@ format and behavior is currently in flux.
 
 - `@atosgi//:bnd` - Executable JAR of the bnd CLI. Usable out of the box\!\!
 - `@atosgi//bundles:declarative-services` - Apache Felix SCR implementation of OSGI Declarative Services, as a "Bundle Group"
-- `@atosgi//bundles:felix-default` - A Bundle Group that includes the standard OSGI bundles that come with an Apache Felix release.
+- REMOVED `@atosgi//bundles:felix-default` - A Bundle Group that includes the standard OSGI bundles that come with an Apache Felix release.
+- `@atosgi//bundles:gogo` - A Bundle Group that includes interactive gogo (formally part 1/2 of felix-default)
+- `@atosgi//bundles:bundlerepository` - A Bundle Group that includes apache felix bundle repository (formally part 2/2/ of felix-default)
 - `@atosgi//bundles:config-admin` - A ConfigAdmin bundle group. Currently Apache Felix ConfigAdmin.
 - `@atosgi//bundles:pax-logging-log4j2` - PAX Logging API + Log4j2 implementation.
 - `@@rules_jvm_external++maven+boinsoft_atosgi_maven//:all` - The maven artifacts that atosgi exposes and uses.
