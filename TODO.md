@@ -25,8 +25,8 @@
 - TODO refactor visibility so most is `__pkg__`
 - DONE add autoinstall.d/ installation method
 - DONE rip out old bundle index for now.
-- TODO look into making zip\_overlay executable
-- TODO lots of todos in the zip\_overlay usage in launcher/BUILD
+- WONTFIX look into making zip\_overlay executable
+- WONTFIX lots of todos in the zip\_overlay usage in launcher/BUILD
 - DONE rebuild launcher
 - TODO better config loading into the configadmin
 - TODO fileinstall integration with bazel

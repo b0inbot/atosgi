@@ -1,7 +1,7 @@
+load("@boinsoft_tools//:rules/ziptool.bzl", "ziptool")
 load("@rules_pkg//pkg:zip.bzl", "pkg_zip")
 load("//private:artifact.bzl", artifact = "atosgi_artifact")
 load("//private:bnd.bzl", "bnd")
-load("//private:zip_overlay.bzl", "zip_overlay")
 
 package(
     default_package_metadata = [
@@ -56,7 +56,7 @@ pkg_zip(
 # We can provide arbitrary files into a zip
 # and merge it with our release, providing
 # our "overrides" show up first
-# in the deps list in zip_overlay.
+# in the deps list in ziptool.overlay.
 pkg_zip(
     name = "launcher_config",
     srcs = [
@@ -69,7 +69,7 @@ pkg_zip(
 #
 # creates the final "release JAR"
 #
-zip_overlay(
+ziptool.overlay(
     name = "launcher_release",
     output_file = "launcher-release.jar",
     # deps are applied in-order TODO: figure out a better way
