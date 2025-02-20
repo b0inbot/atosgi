@@ -1,5 +1,13 @@
 load("@atosgi//:defs.bzl", "atosgi_artifact", "bnd", "bundles")
 
+package(
+    default_package_metadata = [
+        "//:license",
+        "//:package_info",
+    ],
+    default_visibility = ["//examples:__subpackages__"],
+)
+
 # We define our java_library like any other library, except that if we
 # need OSGI APIs, we include them as deps.
 #

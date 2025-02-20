@@ -3,13 +3,20 @@ load("//private:artifact.bzl", artifact = "atosgi_artifact")
 load("//private:bnd.bzl", "bnd")
 load("//private:zip_overlay.bzl", "zip_overlay")
 
+package(
+    default_package_metadata = [
+        "//:license",
+        "//:package_info",
+    ],
+    default_visibility = ["//visibility:public"],
+)
+
 java_library(
     name = "launcher-lib",
     srcs = [
         "BundleIndex.java",
         "Main.java",
     ],
-    visibility = ["//visibility:public"],
     deps = [
         artifact("org.osgi:osgi.core"),
         artifact("org.apache.felix:org.apache.felix.framework"),

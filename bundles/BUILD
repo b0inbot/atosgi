@@ -1,7 +1,13 @@
 load("//private:artifact.bzl", artifact = "atosgi_artifact")
 load("//private:bundles.bzl", "bundles")
 
-package(default_visibility = ["//visibility:public"])
+package(
+    default_package_metadata = [
+        "//:license",
+        "//:package_info",
+    ],
+    default_visibility = ["//visibility:public"],
+)
 
 bundles(
     name = "extras",

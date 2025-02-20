@@ -1,12 +1,19 @@
 load("//private:artifact.bzl", artifact = "atosgi_artifact")
 load("//private:bnd.bzl", "bnd")
 
+package(
+    default_package_metadata = [
+        "//:license",
+        "//:package_info",
+    ],
+    default_visibility = ["//visibility:public"],
+)
+
 java_library(
     name = "pomgen-lib",
     srcs = [
         "PomgenMain.java",
     ],
-    visibility = ["//visibility:public"],
     deps = [
         artifact("io.vavr:vavr"),
     ],

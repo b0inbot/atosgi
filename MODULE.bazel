@@ -1,11 +1,12 @@
 module(
     name = "atosgi",
-    version = "0.1.0",
+    version = "0.1.0",  # ensure sync with version.bzl
 )
 
 bazel_dep(name = "aspect_rules_lint", version = "1.0.3")
 bazel_dep(name = "rules_java", version = "8.6.1")
 bazel_dep(name = "rules_pkg", version = "1.0.1")
+bazel_dep(name = "rules_license", version = "1.0.0")
 
 http_jar = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_jar")
 

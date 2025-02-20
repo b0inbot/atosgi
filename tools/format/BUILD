@@ -1,7 +1,13 @@
 load("@aspect_rules_lint//format:defs.bzl", "format_multirun")
 load("@rules_java//java:defs.bzl", "java_binary")
 
-package(default_visibility = ["//:__subpackages__"])
+package(
+    default_package_metadata = [
+        "//:license",
+        "//:package_info",
+    ],
+    default_visibility = ["//:__subpackages__"],
+)
 
 alias(
     name = "java-format-lib",
