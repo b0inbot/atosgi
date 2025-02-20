@@ -30,4 +30,5 @@ java_binary(
 format_multirun(
     name = "format",
     java = ":java-format",
+    starlark = "@buildifier_prebuilt//:buildifier",
 )

@@ -1,6 +1,6 @@
 # atosgi - TODO
 
-- BLOCKED add buildifier - https://github.com/bazelbuild/buildtools/issues/1204 - still some issues somewhere.
+- WONTFIX add buildifier - https://github.com/bazelbuild/buildtools/issues/1204 - still some issues somewhere.
 - TODO design `osgi_bundle` rule
 - DONE remove all XManifest stuff
 - TODO better launcher documentation
