@@ -11,6 +11,7 @@ import java.util.stream.*;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.launch.*;
+import org.osgi.framework.startlevel.BundleStartLevel;
 import org.osgi.framework.startlevel.FrameworkStartLevel;
 
 /**
@@ -87,11 +88,13 @@ public class Main {
     // marking a series of bundles as provides feature "interactive shell" and then
     // turn that feature off before starting up.
     boolean nonInteractive = System.getProperty("nonInteractive") != null;
+    boolean loadCwdBundles = System.getProperty("loadCwdBundles") != null;
 
     info("atosgi-launcher");
     info("== CWD: " + cwd.toString());
     info("== Cache: " + cache.toString());
     info("== Interactive: " + Boolean.toString(!nonInteractive));
+    info("== Load Bundles from CWD: " + Boolean.toString(loadCwdBundles));
 
     try {
 
@@ -130,6 +133,21 @@ public class Main {
         var l = index.install(ctx, defaultStartLevel);
         bundles.addAll(l.stream().map(Try::get).toList());
       }
+
+      // find and install bundles in the current working directory
+      if (loadCwdBundles) {
+        File dir = new File(".");
+        File[] files = dir.listFiles();
+        for (File f : files) {
+          if (f.getName().endsWith(".jar")) {
+            var bundle = ctx.installBundle("file:" + f.getPath());
+            bundles.add(bundle);
+            bundle.adapt(BundleStartLevel.class).setStartLevel(defaultStartLevel);
+          }
+        }
+      }
+
+      // start the OSGI framework
       framework.start();
 
       // start each bundle
