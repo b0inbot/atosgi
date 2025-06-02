@@ -44,6 +44,17 @@ bnd(
     ],
 )
 
+bnd(
+    name = "hello_bundle2",
+    bnd_inputs = {
+        "Private-Package": "boinsoft.atosgi.example",
+        "Bundle-SymbolicName": "boisoft.atosgi.example.hello_bundle2",
+    },
+    deps = [
+        ":hello",
+    ],
+)
+
 # We create a "bundle group" which specifies the list of bundles and other
 # bundle group dependencies. (This is currently required for running in a launcher target
 # but may become unnecessary.)

@@ -24,6 +24,11 @@ def _bnd_impl(ctx):
     for k in ctx.attr.bnd_inputs:
         bndlines.append(k + ": " + ctx.attr.bnd_inputs[k])
 
+    if ctx.attr.bnd_inputs.get("Bundle-SymbolicName") == None:
+        #TODO: there could be better ways of deriving the symbolic name,
+        # such as the repo toplevel name PLUS label.name?
+        bndlines.append("Bundle-SymbolicName: " + ctx.label.name)
+
     ctx.actions.write(
         bnd,
         "\n".join(bndlines),
