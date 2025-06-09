@@ -82,20 +82,25 @@ public class Main {
     }
 
     for (Bundle b : ctx.getBundles()) {
-      System.out.println(b.getSymbolicName());
+      System.out.println(b.getSymbolicName() + " " + b.getState());
     }
 
     boolean ok = true;
     for (String bundle : result) {
-      boolean missing =
+      var bundles =
           Arrays.stream(ctx.getBundles())
-                  .filter((b) -> b.getSymbolicName().startsWith(bundle))
-                  .collect(Collectors.toList())
-                  .size()
-              == 0;
-      if (missing) {
-        System.out.println(bundle + " missing");
+              .filter((b) -> b.getSymbolicName().startsWith(bundle))
+              .collect(Collectors.toList());
+      if (bundles.size() == 0) {
+        System.err.println(bundle + " missing");
         ok = false;
+      } else {
+        for (Bundle b : bundles) {
+          if ((b.getState() & Bundle.ACTIVE) == 0) {
+            System.err.println(b.getSymbolicName() + " not started");
+            ok = false;
+          }
+        }
       }
     }
 
@@ -200,8 +205,14 @@ public class Main {
 
       boolean result = true;
       if (testAndQuit) {
-        result = runTest(ctx);
-        framework.stop();
+        for (int x = 0; x <= 10; x++) {
+          result = runTest(ctx);
+          if (result) {
+            framework.stop();
+            break;
+          }
+          framework.waitForStop(2500);
+        }
       } else {
         framework.waitForStop(0);
       }
