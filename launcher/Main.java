@@ -68,6 +68,40 @@ public class Main {
     return configProps;
   }
 
+  public static boolean runTest(BundleContext ctx) throws Exception {
+    String testScript = System.getProperty("testScript");
+    if (testScript == null) {
+      return true;
+    }
+    File f = new File(testScript);
+    ArrayList<String> result = new ArrayList<>();
+    try (BufferedReader br = new BufferedReader(new FileReader(testScript))) {
+      while (br.ready()) {
+        result.add(br.readLine());
+      }
+    }
+
+    for (Bundle b : ctx.getBundles()) {
+      System.out.println(b.getSymbolicName());
+    }
+
+    boolean ok = true;
+    for (String bundle : result) {
+      boolean missing =
+          Arrays.stream(ctx.getBundles())
+                  .filter((b) -> b.getSymbolicName().startsWith(bundle))
+                  .collect(Collectors.toList())
+                  .size()
+              == 0;
+      if (missing) {
+        System.out.println(bundle + " missing");
+        ok = false;
+      }
+    }
+
+    return ok;
+  }
+
   public static void main(String[] args) throws IOException {
     Path cwd = Path.of("").toAbsolutePath();
     Path cache;
@@ -89,12 +123,14 @@ public class Main {
     // turn that feature off before starting up.
     boolean nonInteractive = System.getProperty("nonInteractive") != null;
     boolean loadCwdBundles = System.getProperty("loadCwdBundles") != null;
+    boolean testAndQuit = System.getProperty("testAndQuit") != null;
 
     info("atosgi-launcher");
     info("== CWD: " + cwd.toString());
     info("== Cache: " + cache.toString());
     info("== Interactive: " + Boolean.toString(!nonInteractive));
     info("== Load Bundles from CWD: " + Boolean.toString(loadCwdBundles));
+    info("== Test And Quit: " + Boolean.toString(testAndQuit));
 
     try {
 
@@ -162,13 +198,23 @@ public class Main {
         Thread.sleep(sleepIntervalMs);
       }
 
-      framework.waitForStop(0);
+      boolean result = true;
+      if (testAndQuit) {
+        result = runTest(ctx);
+        framework.stop();
+      } else {
+        framework.waitForStop(0);
+      }
 
       if (cleanupCache) {
         info("cleaning up tmp " + cache.toString());
         try (var dirStream = Files.walk(cache)) {
           dirStream.map(Path::toFile).sorted(Comparator.reverseOrder()).forEach(File::delete);
         }
+      }
+
+      if (!result) {
+        System.exit(1);
       }
     } catch (Exception ex) {
       System.err.println("Could not create framework: " + ex);

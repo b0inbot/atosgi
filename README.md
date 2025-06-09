@@ -12,13 +12,15 @@ NOTE: currently requires bazel8 due to use of new "symbolic macros"
 
 ### Usage
 
-The main rules are "bnd", "bundles".
+The main rules are `bnd`, `bundles`, and `bundles_test`
 
-"bnd" is used for applying bnd rules to a java\_library
+`bnd` is used for applying bnd rules to a java\_library
 target. The output of the bnd rule is an OSGI bundle that can be deployed.
 
-"bundles" is used for grouping related OSGI bundles together in a single group. In
+`bundles` is used for grouping related OSGI bundles together in a single group. In
 documentation these are called Bundle Groups (see below).
+
+`bundles_test` is used for asserting all the bundles in a given group can boot up.
 
 See [examples/hello/BUILD](examples/hello/BUILD) for annotated usage.
 

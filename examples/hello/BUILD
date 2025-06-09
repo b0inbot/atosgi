@@ -1,4 +1,4 @@
-load("@atosgi//:defs.bzl", "atosgi_artifact", "bnd", "bundles")
+load("@atosgi//:defs.bzl", "atosgi_artifact", "bnd", "bundles", "bundles_test")
 
 package(
     default_package_metadata = [
@@ -38,6 +38,7 @@ bnd(
     # https://bnd.bndtools.org/chapters/820-instructions.html
     bnd_inputs = {
         "Private-Package": "boinsoft.atosgi.example",
+        "Bundle-SymbolicName": "boisoft.atosgi.example.hello_bundle",
     },
     deps = [
         ":hello",
@@ -62,5 +63,13 @@ bundles(
     name = "hello_bundles",
     bundles = [
         ":hello_bundle",
+    ],
+)
+
+bundles_test(
+    name = "hello_bundles_test",
+    src = ":hello_bundles",
+    expected = [
+        "boisoft.atosgi.example.hello_bundle",
     ],
 )

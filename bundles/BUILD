@@ -1,5 +1,5 @@
 load("//private:artifact.bzl", artifact = "atosgi_artifact")
-load("//private:bundles.bzl", "bundles")
+load("//private:bundles.bzl", "bundles", "bundles_test")
 
 package(
     default_package_metadata = [
@@ -18,6 +18,15 @@ bundles(
     start_levels = [
         "org.osgi=40",
         "io.vavr=40",
+    ],
+)
+
+bundles_test(
+    name = "extras_test",
+    src = ":extras",
+    expected = [
+        "io.vavr",
+        "org.osgi.util.tracker",
     ],
 )
 
@@ -124,5 +133,14 @@ bundles(
     ],
     start_levels = [
         "io.netty=45",
+    ],
+)
+
+bundles_test(
+    name = "netty_test",
+    src = ":netty",
+    expected = [
+        "io.netty.common",
+        "io.netty.codec",
     ],
 )
