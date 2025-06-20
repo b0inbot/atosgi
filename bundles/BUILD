@@ -9,6 +9,14 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
+# the launcher comes with a bunch of defaults, so if they
+# are already included then the bundle_test just needs empty
+bundles(
+    name = "empty",
+    bundles = [],
+    visibility = ["//visibility:private"],
+)
+
 bundles(
     name = "extras",
     bundles = [
@@ -83,6 +91,14 @@ bundles(
     ],
 )
 
+bundles_test(
+    name = "scr_test",
+    src = ":empty",
+    expected = [
+        "org.apache.felix.scr",
+    ],
+)
+
 bundles(
     name = "pax-logging-log4j2",
     bundles = [
@@ -91,6 +107,14 @@ bundles(
     ],
     start_levels = [
         "org.ops4j.pax.logging=40",
+    ],
+)
+
+bundles_test(
+    name = "pax-logging-log4j_test",
+    src = ":empty",
+    expected = [
+        "org.ops4j.pax.logging.pax-logging-log4j2",
     ],
 )
 
@@ -104,6 +128,14 @@ bundles(
     ],
 )
 
+bundles_test(
+    name = "configadmin_test",
+    src = ":empty",
+    expected = [
+        "org.apache.felix.configadmin",
+    ],
+)
+
 bundles(
     name = "fileinstall",
     bundles = [
@@ -111,6 +143,14 @@ bundles(
     ],
     start_levels = [
         "org.apache.felix.fileinstall=30",
+    ],
+)
+
+bundles_test(
+    name = "fileinstall_test",
+    src = ":empty",
+    expected = [
+        "org.apache.felix.fileinstall",
     ],
 )
 
@@ -163,7 +203,7 @@ bundles(
 
 bundles_test(
     name = "healthcheck_test",
-    src = ":healthcheck",
+    src = ":empty",
     expected = [
         "org.apache.felix.healthcheck.core",
     ],
