@@ -144,3 +144,27 @@ bundles_test(
         "io.netty.codec",
     ],
 )
+
+bundles(
+    name = "healthcheck",
+    bundles = [
+        artifact("org.apache.felix:org.apache.felix.healthcheck.api"),
+        artifact("org.apache.felix:org.apache.felix.healthcheck.core"),
+        artifact("org.apache.felix:org.apache.felix.healthcheck.generalchecks"),
+        artifact("org.apache.felix:org.apache.felix.eventadmin"),
+        #TODO: strip out the servlet codee from healthcheck.core so we can remove servlet-api
+        artifact("org.apache.felix:org.apache.felix.http.servlet-api"),
+        artifact("org.osgi:org.osgi.service.servlet"),
+    ],
+    start_levels = [
+        "org.apache.felix.healthcheck=45",
+    ],
+)
+
+bundles_test(
+    name = "healthcheck_test",
+    src = ":healthcheck",
+    expected = [
+        "org.apache.felix.healthcheck.core",
+    ],
+)

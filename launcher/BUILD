@@ -23,6 +23,7 @@ java_library(
         artifact("org.apache.felix:org.apache.felix.framework"),
         artifact("org.apache.felix:org.apache.felix.main"),
         artifact("io.vavr:vavr"),
+        artifact("org.apache.felix:org.apache.felix.healthcheck.api"),
     ],
 )
 
@@ -50,6 +51,7 @@ pkg_zip(
         "@atosgi//bundles:declarative-services",
         "@atosgi//bundles:fileinstall",
         "@atosgi//bundles:gogo",
+        "@atosgi//bundles:healthcheck",
         "@atosgi//bundles:pax-logging-log4j2",
     ],
     package_dir = "autoinstall.d",

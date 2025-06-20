@@ -76,6 +76,13 @@ maven.install(
         "io.netty:netty-transport-native-epoll:4.1.100.Final",
         "io.netty:netty-transport-classes-epoll:4.1.100.Final",
         "io.netty:netty-handler-proxy:4.1.100.Final",
+        "org.apache.felix:org.apache.felix.healthcheck.api:2.0.4",
+        "org.apache.felix:org.apache.felix.healthcheck.annotation:2.0.0",
+        "org.apache.felix:org.apache.felix.healthcheck.core:2.3.0",
+        "org.apache.felix:org.apache.felix.healthcheck.generalchecks:3.0.8",
+        "org.apache.felix:org.apache.felix.eventadmin:1.6.4",
+        "org.apache.felix:org.apache.felix.http.servlet-api:6.1.0",
+        "org.osgi:org.osgi.service.servlet:2.0.0",
         # END-pom.xml
     ],
     strict_visibility = True,
