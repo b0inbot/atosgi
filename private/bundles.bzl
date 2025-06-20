@@ -34,6 +34,15 @@ def _bundles_test_impl(ctx):
             ctx.actions.symlink(output = sl, target_file = b)
             links.append(sl)
 
+    test_files = []
+    if ctx.attr.test_src != None:
+        for b in ctx.attr.test_src[DefaultInfo].files.to_list():
+            if b.dirname != expected.dirname:
+                sl = ctx.actions.declare_file("link-test-" + b.basename)  #, sibling = expected)
+                ctx.actions.symlink(output = sl, target_file = b)
+                links.append(sl)
+        test_files = ctx.attr.test_src[DefaultInfo].files.to_list()
+
     # Do not add .jar so we can skip it in the bundle loader
     launcher = ctx.actions.declare_file("launcher")
     ctx.actions.symlink(output = launcher, target_file = ctx.attr._test_tool[DefaultInfo].files.to_list()[0])
@@ -43,8 +52,8 @@ def _bundles_test_impl(ctx):
         find .
         set -x
         F=$(find . -iname \\*.test.in)
-	cd $(dirname $F)
-	java -jar -DloadCwdBundles -DnonInteractive -DtestScript=$(basename $F) -DtestAndQuit launcher
+        cd $(dirname $F)
+        java -jar -DloadCwdBundles -DnonInteractive -DtestScript=$(basename $F) -DtestAndQuit launcher
     """
 
     ctx.actions.write(
@@ -57,7 +66,7 @@ def _bundles_test_impl(ctx):
             runfiles = ctx.runfiles(files = [
                 ctx.attr._test_tool[DefaultInfo].files.to_list()[0],
                 expected,
-            ] + ctx.attr.src[DefaultInfo].files.to_list() + links),
+            ] + ctx.attr.src[DefaultInfo].files.to_list() + test_files + links),
             files = ctx.attr._test_tool[DefaultInfo].files,
             executable = ctx.outputs.executable,
         ),
@@ -81,6 +90,10 @@ bundles = rule(
 bundles_test = rule(
     attrs = {
         "src": attr.label(
+            providers = [BundlesInfo],
+            allow_files = False,
+        ),
+        "test_src": attr.label(
             providers = [BundlesInfo],
             allow_files = False,
         ),
