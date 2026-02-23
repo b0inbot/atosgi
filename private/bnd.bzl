@@ -8,10 +8,13 @@ def _bnd_impl(ctx):
     links = []
     bundle_basenames = []
     for b in ctx.files.deps:
-        sl = ctx.actions.declare_file("link-" + b.basename, sibling = bnd)
-        ctx.actions.symlink(output = sl, target_file = b)
-        links.append(sl)
-        bundle_basenames.append("link-" + b.basename)
+        # rules like kt_jvm_library export a jdeps file as well as a JAR
+        if b.extension == "jar":
+            sl = ctx.actions.declare_file("link-" + b.basename, sibling = bnd)
+            ctx.actions.symlink(output = sl, target_file = b)
+            links.append(sl)
+            bundle_basenames.append("link-" + b.basename)
+        #TODO: handle jdeps, if needed
 
     bndlines = []
     bndlines.append("-standalone:")
