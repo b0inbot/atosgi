@@ -8,7 +8,7 @@ NOTE: currently requires bazel8 due to use of new "symbolic macros"
 
 ### Installation
 
-    bazel_dep(name = "atosgi", version = "0.1.0")
+    bazel_dep(name = "atosgi", version = "0.2.0")
 
 ### Usage
 
