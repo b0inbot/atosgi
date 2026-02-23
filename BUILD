@@ -1,4 +1,5 @@
 load("@atosgi//:defs.bzl", "launcher")
+load("@rules_java//java:defs.bzl", "java_binary")
 load("@rules_license//:version.bzl", "version")
 load("@rules_license//rules:license.bzl", "license")
 load("@rules_license//rules:package_info.bzl", "package_info")

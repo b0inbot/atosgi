@@ -1,4 +1,5 @@
 load("@boinsoft_tools//:rules/ziptool.bzl", "ziptool")
+load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 load("@rules_pkg//pkg:zip.bzl", "pkg_zip")
 load("//private:artifact.bzl", artifact = "atosgi_artifact")
 load("//private:bnd.bzl", "bnd")

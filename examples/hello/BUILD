@@ -1,4 +1,5 @@
 load("@atosgi//:defs.bzl", "atosgi_artifact", "bnd", "bundles", "bundles_test")
+load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 
 package(
     default_package_metadata = [

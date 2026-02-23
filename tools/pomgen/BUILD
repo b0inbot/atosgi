@@ -1,3 +1,4 @@
+load("@rules_java//java:defs.bzl", "java_binary", "java_library")
 load("//private:artifact.bzl", artifact = "atosgi_artifact")
 load("//private:bnd.bzl", "bnd")
 

@@ -1,6 +1,6 @@
 module(
     name = "atosgi",
-    version = "0.1.0",  # ensure sync with version.bzl
+    version = "0.2.0",  # ensure sync with version.bzl
 )
 
 bazel_dep(
@@ -9,14 +9,14 @@ bazel_dep(
     dev_dependency = True,
 )
 
-bazel_dep(name = "aspect_rules_lint", version = "1.0.3")
-bazel_dep(name = "rules_java", version = "8.6.1")
+bazel_dep(name = "aspect_rules_lint", version = "2.2.0")
+bazel_dep(name = "rules_java", version = "9.5.0")
 bazel_dep(name = "rules_pkg", version = "1.0.1")
 bazel_dep(name = "rules_license", version = "1.0.0")
-bazel_dep(name = "boinsoft_tools", version = "0.1.0")
+bazel_dep(name = "boinsoft_tools", version = "0.2.0")
 git_override(
     module_name = "boinsoft_tools",
-    commit = "fb3e4a61693345ca3c1749af4568eae72db9d879",
+    commit = "79884ec728fd3cd794ec72df6e7c09ba4e3fc295",
     remote = "https://github.com/b0inbot/tools.git",
 )
 
